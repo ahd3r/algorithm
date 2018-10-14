@@ -58,12 +58,13 @@ class Graph():
 		return self.node
 
 	def create_a_connections_for_graph(self):
-		node_3=self.node
-		node_3.remove(node_3[0])
-		node_3.remove(node_3[len(node_3)-1])
-		for c in self.node:
-			for cc in node_3:
-				self.connect[f'{c} > {cc}']=random.choices(self.weight)
+		for l in range(len(self.node)):
+			if type(self.node)==list:
+				for c in range(len(self.node)):
+					self.connect[f'{self.node[l]} > {self.node[l]}']=random.choice(self.weight)
+			else:
+				for c_2 in range(len(self.lengh)):
+					self.connect[f'{self.node[c_2]}']=random.choice(self.weight)
 		return self.connect
 
 	def find_the_way(self):
