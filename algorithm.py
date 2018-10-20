@@ -1,5 +1,6 @@
 from time import sleep
 import random
+# from math import inf
 
 # Try to use a call def by other def
 def tryy():
@@ -58,23 +59,54 @@ class Graph():
 		return self.node
 
 	def create_a_connections_for_graph(self):
-		for l in range(len(self.node)):
-			if type(self.node)==list:
-				for c in range(len(self.node)):
-					self.connect[f'{self.node[l]} > {self.node[l]}']=random.choice(self.weight)
-			else:
-				for c_2 in range(len(self.lengh)):
-					self.connect[f'{self.node[c_2]}']=random.choice(self.weight)
+		for c in range(len(self.node[1])):
+			self.connect[f'{self.node[0]}==>{self.node[1][c]}']=random.choice(self.weight)
+		for cc in range(1, self.lengh):
+			for c in range(len(self.node[cc])):
+				for n in range(len(self.node[cc+1])):
+					self.connect[f'{self.node[cc][c]}==>{self.node[cc+1][n]}']=random.choice(self.weight)
+		for c in range(len(self.node[self.lengh])):
+			self.connect[f'{self.node[self.lengh][c]}==>{self.node[self.lengh+1]}']=random.choice(self.weight)
 		return self.connect
 
 	def find_the_way(self):
-		return self.res_way, self.res_weight
+		time_weight={'(1,start)': 0}
+		res_for_graph=[]
+		some=[]
+		for r in self.connect.values():
+			res_for_graph.append(r)
+		for c in range(len(self.node[1])):
+			time_weight[f'{self.node[1][c]}']=res_for_graph[c]
+		for c in range(2, len(self.node)):
+			if type(self.node[c])==list:
+				for cc in range(len(self.node[c])):
+					for ccc in self.connect:
+						cccc=ccc.split('==>')
+						if cccc[1]==self.node[c][cc]:
+							for ccccc in self.node[c-1]:
+								some.append(self.connect[f'{ccccc}==>{cccc[1]}']+time_weight[f'{ccccc}'])
+							some.sort()
+							time_weight[f'{self.node[c][cc]}']=some[0]
+							some=[]
+			else:
+				for cc in range(len(self.node[c-1])):
+					some.append(self.connect[f'{self.node[c-1][cc]}==>{self.node[c]}']+time_weight[f'{self.node[c-1][cc]}'])
+				some.sort()
+				time_weight[f'{self.node[c]}']=some[0]
+				some=[]
+		self.res_weight=time_weight[f'({self.lengh+2},finish)']
+		return self.res_way, self.res_weight, time_weight
 
-g=Graph(lengh=3,weight=[1,2,3,4])
-g.create_a_node_for_graph()
-# print(g.create_a_node_for_graph())
-print(g.create_a_connections_for_graph())
-# print(g.find_the_way())
+def done_graph(lengh, weight):
+	g=Graph(lengh=lengh, weight=weight)
+	print(g.create_a_node_for_graph())
+	print(g.create_a_connections_for_graph())
+	gg=g.find_the_way()
+	print(f'Result way: {gg[0]}')
+	print(f'Result weight: {gg[1]}')
+	print(f'Time weight: {gg[2]}')
+
+done_graph(3, [1,2,3,4])
 
 # The task of finding the easiest way for graph with some weight include negative
 
