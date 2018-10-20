@@ -56,7 +56,8 @@ class Graph():
 			self.node.append(node_2)
 			node_2=[]
 		self.node.append(f'({self.lengh + 2},finish)')
-		return self.node
+		self.res_way.append(self.node[0])
+		return self.node, self.res_way
 
 	def create_a_connections_for_graph(self):
 		for c in range(len(self.node[1])):
@@ -69,7 +70,7 @@ class Graph():
 			self.connect[f'{self.node[self.lengh][c]}==>{self.node[self.lengh+1]}']=random.choice(self.weight)
 		return self.connect
 
-	def find_the_way(self):
+	def find_the_weight(self):
 		time_weight={'(1,start)': 0}
 		res_for_graph=[]
 		some=[]
@@ -94,17 +95,23 @@ class Graph():
 				some.sort()
 				time_weight[f'{self.node[c]}']=some[0]
 				some=[]
+				self.res_way.append(self.node[c])
 		self.res_weight=time_weight[f'({self.lengh+2},finish)']
-		return self.res_way, self.res_weight, time_weight
+		return self.res_way, self.res_weight
+
+	def find_the_way(self):
+		return self.res_way
 
 def done_graph(lengh, weight):
 	g=Graph(lengh=lengh, weight=weight)
+	print('Node: ', end='')
 	print(g.create_a_node_for_graph())
+	print('Connection: ', end='')
 	print(g.create_a_connections_for_graph())
-	gg=g.find_the_way()
-	print(f'Result way: {gg[0]}')
+	gg=g.find_the_weight()
 	print(f'Result weight: {gg[1]}')
-	print(f'Time weight: {gg[2]}')
+	print('Result way: ', end='')
+	print(g.find_the_way())
 
 done_graph(3, [1,2,3,4])
 
