@@ -1,6 +1,6 @@
 from time import sleep
 import random
-# from math import inf
+from math import inf
 
 # Try to use a call def by other def
 def tryy():
@@ -43,6 +43,7 @@ class Graph():
 		self.res_weight=None
 		self.node=[]
 		self.connect={}
+		self.weight_node_by_their_place={}
 
 	def __str__(self):
 		return 'Class for count the easiest way for graph with some weight!'
@@ -56,8 +57,7 @@ class Graph():
 			self.node.append(node_2)
 			node_2=[]
 		self.node.append(f'({self.lengh + 2},finish)')
-		self.res_way.append(self.node[0])
-		return self.node, self.res_way
+		return self.node
 
 	def create_a_connections_for_graph(self):
 		for c in range(len(self.node[1])):
@@ -95,11 +95,30 @@ class Graph():
 				some.sort()
 				time_weight[f'{self.node[c]}']=some[0]
 				some=[]
-				self.res_way.append(self.node[c])
 		self.res_weight=time_weight[f'({self.lengh+2},finish)']
-		return self.res_way, self.res_weight
+		self.weight_node_by_their_place=time_weight
+		return self.res_weight
 
 	def find_the_way(self):
+		time_way={}
+		time_way[f'{self.node[0]}']='—'
+		for c in range(len(self.node[1])):
+			time_way[f'{self.node[1][c]}']=f'{self.node[0]} > {self.node[1][c]}'
+		for c in range(2,len(self.node)):
+			if type(self.node[c])==str:
+				for ccc in self.connect:
+					cccc=ccc.split('==>')
+					if cccc[1]==self.node[c]:
+						if self.connect[ccc]+self.weight_node_by_their_place[cccc[0]]==self.res_weight:
+							time_way[f'{cccc[1]}']=f"{time_way[f'{cccc[0]}']} > {cccc[1]}"
+			else:
+				for cc in range(len(self.node[c])):
+					for ccc in self.connect:
+						cccc=ccc.split('==>')
+						if cccc[1]==self.node[c][cc]:
+							if self.connect[ccc]+self.weight_node_by_their_place[f'{cccc[0]}']==self.weight_node_by_their_place[f'{cccc[1]}']:
+								time_way[f'{cccc[1]}']=f"{time_way[f'{cccc[0]}']} > {cccc[1]}"
+		self.res_way=time_way[f'{self.node[len(self.node)-1]}']
 		return self.res_way
 
 def done_graph(lengh, weight):
@@ -108,12 +127,12 @@ def done_graph(lengh, weight):
 	print(g.create_a_node_for_graph())
 	print('Connection: ', end='')
 	print(g.create_a_connections_for_graph())
-	gg=g.find_the_weight()
-	print(f'Result weight: {gg[1]}')
+	print('Result weight: ', end='')
+	print(g.find_the_weight())
 	print('Result way: ', end='')
 	print(g.find_the_way())
 
-done_graph(3, [1,2,3,4])
+# done_graph(5, [1,2,3,4,5])
 
 # The task of finding the easiest way for graph with some weight include negative
 
@@ -126,3 +145,6 @@ done_graph(3, [1,2,3,4])
 
 # 3
 # The task of traveling Camewoyzer
+
+# 4
+# Greedy algorithm
