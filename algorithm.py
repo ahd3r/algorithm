@@ -26,7 +26,7 @@ class Graph():
 		self.weight_node_by_their_place={}
 
 	def __str__(self):
-		return 'Class for count the easiest way for graph with some weight!'
+		return 'Class for count the easiest way of graph with some weight!'
 
 	def create_a_node_for_graph(self):
 		node_2=[]
@@ -125,7 +125,7 @@ class GraphRight():
 		self.connect={}
 
 	def __str__(self):
-		return 'Class for count the easiest way for graph with some weight!'
+		return 'Class for count the easiest way of graph with some weight!'
 
 	def create_a_node_for_graph(self):
 		node_2=[]
@@ -201,6 +201,118 @@ def done_right_graph(lengh, weight):
 # done_right_graph(3, [1,2,3,4])
 
 # The task of finding the shortest way for graph without some weight
+class GraphWithoutWeight():
+	def __init__(self, lengh):
+		self.lengh=lengh
+		self.node=[]
+		self.connect=[]
+		self.step=None
+		self.res_way=None
+
+	def __str__(self):
+		return f'This algorithm of counting the shortest way from start to finish'
+
+	def create_a_node(self):
+		node_2=[]
+		self.node.append('(1,start)')
+		for x in range(self.lengh):
+			for y in range(random.randint(1,3)): # level
+				node_2.append(f'({x + 2}.{y+1})')
+			self.node.append(node_2)
+			node_2=[]
+		self.node.append(f'({self.lengh + 2},finish)')
+		return self.node
+
+	def create_a_connect(self):
+		for c in range(len(self.node[1])):
+			self.connect.append(f'{self.node[0]}==>{self.node[1][c]}')
+		for cc in range(1, self.lengh):
+			for c in range(len(self.node[cc])):
+				for n in range(len(self.node[cc+1])):
+					self.connect.append(f'{self.node[cc][c]}==>{self.node[cc+1][n]}')
+		for c in range(len(self.node[self.lengh])):
+			self.connect.append(f'{self.node[self.lengh][c]}==>{self.node[self.lengh+1]}')
+		for c in range(len(self.node)-4): # non-standart connect
+			if type(self.node[c])==str: # first element in array
+				num1 = random.randint(0,1)
+				if num1 == 1:
+					check=0
+					num2 = random.randint(2,3)
+					for cc in range(len(self.node[c+num2])):
+						num3 = random.randint(0,1)
+						if num3==1:
+							self.connect.append(f'{self.node[c]}==>{self.node[c+num2][cc]}')
+							check+=1
+					if check==0:
+						self.connect.append(f'{self.node[c]}==>{self.node[c+num2][0]}')
+			else:
+				for cc in range(len(self.node[c])):
+					num1 = random.randint(0,1)
+					if num1==1:
+						check=0
+						num2=random.randint(2,3)
+						if type(self.node[c+num2])==str:
+							self.connect.append(f'{self.node[c][cc]}==>{self.node[c+num2]}')
+						else:
+							for ccc in range(len(self.node[c+num2])):
+								num3=random.randint(0,1)
+								if num3==1:
+									self.connect.append(f'{self.node[c][cc]}==>{self.node[c+num2][ccc]}')
+									check+=1
+							if check==0:
+								self.connect.append(f'{self.node[c][cc]}==>{self.node[c+num2][0]}')
+		for c in range(len(self.node[len(self.node)-3])): # non-standart connect too
+			num1=random.randint(0,1)
+			if num1==1:
+				self.connect.append(f'{self.node[len(self.node)-3][c]}==>{self.node[len(self.node)-1]}')
+		return self.connect
+
+	def find_way(self):
+		time_step={}
+		time_way={'(1,start)':'(1,start)'}
+		for c in range(len(self.node)):
+			if type(self.node[c])==str:
+				time_step[self.node[c]]=inf
+			else:
+				for cc in range(len(self.node[c])):
+					time_step[self.node[c][cc]]=inf
+		time_step['(1,start)']=0
+		for c in range(len(self.node[1])):
+			time_step[self.node[1][c]]=1
+			time_way[self.node[1][c]]=f'{self.node[0]} > {self.node[1][c]}'
+		for c in range(2,len(self.node)):
+			if type(self.node[c])==str:
+				for cc in self.connect:
+					ccc=cc.split('==>')
+					if ccc[1]==self.node[c]:
+						if time_step[ccc[1]]>time_step[ccc[0]]+1:
+							time_step[ccc[1]]=time_step[ccc[0]]+1
+							time_way[ccc[1]]=f'{time_way[ccc[0]]} > {ccc[1]}'
+			else:
+				for cc in range(len(self.node[c])):
+					for ccc in self.connect:
+						cccc=ccc.split('==>')
+						if cccc[1]==self.node[c][cc]:
+							if time_step[cccc[1]]>time_step[cccc[0]]+1:
+								time_step[cccc[1]]=time_step[cccc[0]]+1
+								time_way[cccc[1]]=f'{time_way[cccc[0]]} > {cccc[1]}'
+		self.step=time_step[self.node[len(self.node)-1]]
+		self.res_way=time_way[self.node[len(self.node)-1]]
+		return self.step, self.res_way
+
+def done_graph_without_weight(lengh):
+	g=GraphWithoutWeight(lengh=lengh)
+	print('Node: ', end='')
+	print(g.create_a_node())
+	print('Connect:', end='')
+	print(g.create_a_connect())
+	gg=g.find_way()
+	print('Result way: ', end='')
+	print(gg[1])
+	print('Total step: ', end='')
+	print(gg[0])
+
+# done_graph_without_weight(3)
 
 # 2
 # The task of covering states
