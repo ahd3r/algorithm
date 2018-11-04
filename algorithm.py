@@ -315,10 +315,99 @@ def done_graph_without_weight(lengh):
 # done_graph_without_weight(3)
 
 # 2
-# The task of covering states
+# Greedy algorithm
+class Greedy():
+	def __init__(self, allow_tower, num_of_needed_states):
+		self.num_of_needed_states=num_of_needed_states
+		self.must_cover=[]
+		self.allow_states=['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming']
+		self.cover_tower={}
+		self.price_tower={}
+		self.allow_tower=['KVLY-TV mast','KXJB-TV mast','KXTV/KOVR tower','Petronius Platform','KCAU TV Tower','KATV Tower','WECT TV6 Tower','WOI-Tower','AFLAC Tower','WBTV-Tower','WTTO Tower','WCSC-Tower','KTVE-Tower','WCTV Tower','TV Alabama Tower','KDLT Tower','KY3 Tower','KLDE Tower','WLBT Tower','WCIX TV Tower','KYTV Tower 2','Hoyt Radio Tower','WNCN Tower','KHYS Tower','WNCN Tower 2','KELO TV Tower','KHOU-TV Tower','KTRK-TV Tower','Fox-TV Tower','WCNC-TV Tower','WFMY Tower','WTVY-TV Tower','KLKN Tower','KBIM Tower']
+		self.must_tower_to_use=[]
+	
+	def __str__(self):
+		return f'This algorithm find a town, which you must to use for cover your states'
+	
+	def fill_must_cover(self):
+		for c in range(self.num_of_needed_states):
+			cc=random.choice(self.allow_states)
+			if cc in self.must_cover:
+				while cc in self.must_cover:
+					cc=random.choice(self.allow_states)
+				self.must_cover.append(cc)
+			else:
+				self.must_cover.append(cc)
+		return self.must_cover
+
+	def fill_cover_tower(self):
+		for c in self.allow_tower:
+			self.cover_tower[c]=random.choice(self.allow_states)
+		for c in range(4):
+			for cc in range(4):
+				ccc=random.choice(self.allow_states)
+				cccc=self.cover_tower[self.allow_tower[c]].split(',')
+				if ccc in cccc:
+					while ccc in cccc:
+						ccc=random.choice(self.allow_states)
+					self.cover_tower[self.allow_tower[c]]=f'{self.cover_tower[self.allow_tower[c]]},{ccc}'
+				else:
+					self.cover_tower[self.allow_tower[c]]=f'{self.cover_tower[self.allow_tower[c]]},{ccc}'
+		for c in range(4, 24):
+			for cc in range(1):
+				ccc=random.choice(self.allow_states)
+				cccc=self.cover_tower[self.allow_tower[c]].split(',')
+				if ccc in cccc:
+					while ccc in cccc:
+						ccc=random.choice(self.allow_states)
+					self.cover_tower[self.allow_tower[c]]=f'{self.cover_tower[self.allow_tower[c]]},{ccc}'
+				else:
+					self.cover_tower[self.allow_tower[c]]=f'{self.cover_tower[self.allow_tower[c]]},{ccc}'
+		return self.cover_tower
+		
+	def fill_price_tower(self):
+		for c in range(len(self.allow_tower)):
+			if len(self.cover_tower[self.allow_tower[c]].split(','))==5:
+				self.price_tower[self.allow_tower[c]]=random.randint(4000, 5000)
+			elif len(self.cover_tower[self.allow_tower[c]].split(','))==2:
+				self.price_tower[self.allow_tower[c]]=random.randint(1000, 2000)
+			else:
+				self.price_tower[self.allow_tower[c]]=random.randint(500, 1000)
+		return self.price_tower
+
+	def find_tower(self):
+		var_for_used_tower=[]
+		var_for_price=[]
+		var1=set(self.must_cover)
+		for c in self.allow_tower:
+			var2=set(self.cover_tower[c].split(','))
+			if var2.intersection(var1)==var2:
+				var_for_used_states=var2
+				var_for_used_tower.append(c)
+				var_for_price.append(self.price_tower[c])
+				for cc in var_for_used_states:
+					self.must_cover.remove(cc)
+			var1=set(self.must_cover)
+		self.must_tower_to_use=var_for_used_tower
+		price=sum(var_for_price)
+		return self.must_tower_to_use, price
+	
+def done_greedy(num_of_needed_states, allow_tower):
+	g=Greedy(num_of_needed_states=num_of_needed_states, allow_tower=allow_tower)
+	print('\nState that must be covering: ', end='')
+	print(g.fill_must_cover())
+	print('\nInfo about radio tower: ', end='')
+	print(g.fill_cover_tower())
+	print(g.fill_price_tower())
+	gg=g.find_tower()
+	print('\nFor cover your states, you must to use this radio tower: ', end='')
+	print(gg[0])
+	print('\nFinal price: ', end='')
+	print(gg[1])
+	
+done_greedy(num_of_needed_states=7, allow_tower=0) # num_of_needed_states must be less then 50 (50 is max)
+
+# One more greedy algorithm, but for max (thief)
 
 # 3
 # The task of traveling Camewoyzer
-
-# 4
-# Greedy algorithm
