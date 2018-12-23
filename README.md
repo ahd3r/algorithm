@@ -1,2 +1,4 @@
 # algorithm
-Some algorithm from book to grok algorithm, which i created by mine method
+Some algorithm from grokking algorithms book
+
+End all algorithms (commenting)
